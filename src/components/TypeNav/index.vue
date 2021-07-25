@@ -2,7 +2,143 @@
   <!-- 商品分类导航 -->
   <div class="type-nav">
     <div class="container">
-      <h2 class="all">全部商品分类</h2>
+      <div @mouseleave="currentIndex = -1">
+        <h2 class="all">全部商品分类</h2>
+        <div class="sort">
+          <div class="all-sort-list2" @click="toSearch($event)">
+            <div
+              class="item"
+              v-for="(c1, index) in categoryList"
+              :key="c1.categoryId"
+              :class="{ item_on: currentIndex === index }"
+              @mouseenter="moveInItem(index)"
+            >
+              <h3>
+                <!-- = 右側, 只要出現[], 就代表一個新的數組來了
+                      只要出現{}, 就代表一個新的對象來了
+                      只要出現function就代表一個新的函數來了
+                 -->
+
+                <!-- <a href="">{{ c1.categoryName }}</a> -->
+                <!-- 第一種寫法: 所有a標籤換成router-link的話會卡, 導致內存當中組件很多,
+                所以效率不高 -->
+
+                <!-- <router-link
+                  :to="{
+                    name: 'search',
+                    query: {
+                      category1Id: c1.categroyId,
+                      categoryName: c1.categoryName,
+                    },
+                  }"
+                  >{{ c1.categoryName }}</router-link
+                > -->
+                <!-- 把聲明式導航改成編程式導航, click事件點擊之後, 是需要調用函數的, 同樣每個a標籤都添加了點擊事件, 那麼內存中就會定義很多函數, 內存占用也是比較大的, 效率雖然比聲明式導航強, 但還是不夠好 -->
+
+                <!-- 事件委派: 找公共的離自己最近的祖先元素, 這個祖先元素只有一個 -->
+                <a
+                  href="javascript:;"
+                  :data-category1Id="c1.categoryId"
+                  :data-categoryName="c1.categoryName"
+                  >{{ c1.categoryName }}</a
+                >
+                <!-- <a
+                  href="javascript:;"
+                  @click="
+                    $router.push({
+                      name: 'search',
+                      query: {
+                        category1Id: c1.categroyId,
+                        categoryName: c1.categoryName,
+                      },
+                    })
+                  "
+                  >{{ c1.categoryName }}</a
+                > -->
+              </h3>
+              <div class="item-list clearfix">
+                <div class="subitem">
+                  <dl
+                    class="fore"
+                    v-for="(c2, index) in c1.categoryChild"
+                    :key="c2.categoryId"
+                  >
+                    <dt>
+                      <!-- <a href="">{{ c2.categoryName }}</a> -->
+                      <!-- <router-link
+                        :to="{
+                          name: 'search',
+                          query: {
+                            category2Id: c2.categroyId,
+                            categoryName: c2.categoryName,
+                          },
+                        }"
+                        >{{ c2.categoryName }}</router-link
+                      > -->
+                      <!-- <a
+                        href="javascript:;"
+                        @click="
+                          $router.push({
+                            name: 'search',
+                            query: {
+                              category2Id: c2.categroyId,
+                              categoryName: c2.categoryName,
+                            },
+                          })
+                        "
+                        >{{ c2.categoryName }}</a
+                      > -->
+                      <a
+                        href="javascript:;"
+                        :data-category2Id="c2.categoryId"
+                        :data-categoryName="c2.categoryName"
+                        >{{ c2.categoryName }}</a
+                      >
+                    </dt>
+                    <dd>
+                      <em
+                        v-for="(c3, index) in c2.categoryChild"
+                        :key="c3.categoryId"
+                      >
+                        <!-- <a href="">{{ c3.categoryName }}</a> -->
+                        <!-- <router-link
+                          :to="{
+                            name: 'search',
+                            query: {
+                              category3Id: c3.categroyId,
+                              categoryName: c3.categoryName,
+                            },
+                          }"
+                          >{{ c3.categoryName }}</router-link
+                        > -->
+                        <!-- <a
+                          href="javascript:;"
+                          @click="
+                            $router.push({
+                              name: 'search',
+                              query: {
+                                category3Id: c3.categroyId,
+                                categoryName: c3.categoryName,
+                              },
+                            })
+                          "
+                          >{{ c3.categoryName }}</a
+                        > -->
+                        <a
+                          href="javascript:;"
+                          :data-category3Id="c3.categoryId"
+                          :data-categoryName="c3.categoryName"
+                          >{{ c3.categoryName }}</a
+                        >
+                      </em>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <nav class="nav">
         <a href="###">服装城</a>
         <a href="###">美妆馆</a>
@@ -13,53 +149,93 @@
         <a href="###">有趣</a>
         <a href="###">秒杀</a>
       </nav>
-      <div class="sort">
-        <div class="all-sort-list2">
-          <div
-            class="item"
-            v-for="(c1, index) in categoryList"
-            :key="c1.categoryId"
-          >
-            <h3>
-              <a href="">{{ c1.categoryName }}</a>
-            </h3>
-            <div class="item-list clearfix">
-              <div class="subitem">
-                <dl
-                  class="fore"
-                  v-for="(c2, index) in c1.categoryChild"
-                  :key="c2.categoryId"
-                >
-                  <dt>
-                    <a href="">{{ c2.categoryName }}</a>
-                  </dt>
-                  <dd>
-                    <em
-                      v-for="(c3, index) in c2.categoryChild"
-                      :key="c3.categoryId"
-                    >
-                      <a href="">{{ c3.categoryName }}</a>
-                    </em>
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
+// import _ from "lodash"; // 這樣引入會把整個lodash全部引入, 把包後體積比較大
+import throttle from "lodash/throttle";
 export default {
   name: "",
+  data() {
+    return {
+      currentIndex: -1,
+    };
+  },
   //組件掛載完成的時候, 就馬上發請求獲取數據, 存儲到vuex裡面,而不是直接在vue組件裡面
   mounted() {
     //dispatch是分發和觸發的意思, 和emit相同
     //本質其實就是在調用指定的action函數
     this.$store.dispatch("getCategoryList");
   },
+  methods: {
+    // _.throttle(renewToken, 300000, { 'trailing': false })
+
+    // 沒有節流的時候
+    // moveInItem(index) {
+    //   this.currentIndex = index;
+    //   console.log(index);
+    // },
+
+    // 節流的時候, 傳遞的參數不能是箭頭函數, 因為箭頭函數內部this不是組件對象
+    moveInItem: throttle(
+      function(index) {
+        this.currentIndex = index;
+        console.log(index);
+      },
+      20,
+      { trailing: false }
+    ),
+    //事件委託click的回調函數
+    toSearch(event) {
+      //event是甚麼? 就是瀏覽器調用函數傳遞過來的事件對象, 代表你傳遞的$event, 只能在模板裡面出現
+      let targetNode = event.target; //獲取我們的目標元素(真正發生事件的元素)
+      console.log(targetNode);
+
+      let data = targetNode.dataset; //獲取當前目標元素身上的data-屬性...組成的對象
+      // console.log(data);
+      //怎麼知道點擊的是不是a標籤
+      //如果是a標籤, 那麼data一定是有categoryname的
+      //如果點的不是a標籤, 那麼data就沒有categoryname
+
+      //參數怎麼攜帶, 要攜帶那些東西的參數?
+      //如果點擊的是a標籤, 那麼參數已經帶過來了, 就在我們的data當中
+
+      let { category1Id, category2Id, category3Id, categoryName } = data;
+
+      if (categoryName) {
+        //category存在就證明點擊的就是a標籤
+        let location = {
+          name: "search",
+        };
+        let query = {
+          categoryName: categoryname,
+        };
+
+        //確定是一級還是二級還是三級的id
+        if (category1Id) {
+          query.category1Id = category1Id;
+        } else if (category2Id) {
+          query.category2Id = category2Id;
+        } else {
+          query.category3Id = category3Id;
+        }
+
+        //找到所有的query參數以後, 最後把query放到location裡面
+        location.query = query;
+        //最終把location對象就構造好了, 跳轉
+        this.$router(location);
+      }
+    },
+    /*
+      event是事件對象
+      每次觸發事件的時候, 系統(瀏覽器內核)都會把這一次觸發事件相關的所有訊息, 封裝成一個對象, 在瀏覽器調用回調函數的時候, 自動傳遞給回調函數的第一個形餐
+
+      回調函數: 自己定義的, 自己沒調用, 最後執行了
+    */
+  },
+
   computed: {
     /*
       函數內部可以是數組也可以是對象
@@ -76,7 +252,7 @@ export default {
   },
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .type-nav {
   border-bottom: 2px solid #e1251b;
 
@@ -186,7 +362,7 @@ export default {
             }
           }
 
-          &:hover {
+          &.item_on {
             background-color: hotpink;
             .item-list {
               display: block;
