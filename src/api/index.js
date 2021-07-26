@@ -23,6 +23,7 @@
     })
 */
 import request from "./ajax";
+import mockAjax from "@/api/mockAjax";
 
 // 請求三級列表
 // /api/product/getBaseCategoryList
@@ -39,3 +40,19 @@ export const reqCategoryList = () => {
 // 這裡如果要調用, 得把模塊引入到main當中
 // 第一種驗證方式
 // reqCategoryList();
+
+//請求獲取模擬接口的數據banner和floor
+
+export const reqBannerList = () => {
+  return mockAjax({
+    url: "/banner",
+    method: "get",
+  });
+};
+
+export const reqFloorList = () => {
+  return mockAjax({
+    url: "/floor",
+    method: "get",
+  });
+};

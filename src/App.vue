@@ -16,6 +16,10 @@ import Footer from "@/components/Footer";
 export default {
   name: "App",
   components: { Header, Footer },
+  mounted() {
+    //在這發請求獲取三級分類的數據, 那麼就只會發一次, 而且一次就夠了, 因為數據不變
+    this.$store.dispatch("getCategoryList");
+  },
 };
 </script>
 

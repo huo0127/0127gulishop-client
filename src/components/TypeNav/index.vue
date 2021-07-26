@@ -2,28 +2,29 @@
   <!-- 商品分类导航 -->
   <div class="type-nav">
     <div class="container">
-      <div @mouseleave="currentIndex = -1">
+      <div @mouseleave="moveOutDiv" @mouseenter="isShow = true">
         <h2 class="all">全部商品分类</h2>
-        <div class="sort">
-          <div class="all-sort-list2" @click="toSearch($event)">
-            <div
-              class="item"
-              v-for="(c1, index) in categoryList"
-              :key="c1.categoryId"
-              :class="{ item_on: currentIndex === index }"
-              @mouseenter="moveInItem(index)"
-            >
-              <h3>
-                <!-- = 右側, 只要出現[], 就代表一個新的數組來了
+        <transition name="sort">
+          <div class="sort" v-show="isShow">
+            <div class="all-sort-list2" @click="toSearch">
+              <div
+                class="item"
+                v-for="(c1, index) in categoryList"
+                :key="c1.categoryId"
+                :class="{ item_on: currentIndex === index }"
+                @mouseenter="moveInItem(index)"
+              >
+                <h3>
+                  <!-- = 右側, 只要出現[], 就代表一個新的數組來了
                       只要出現{}, 就代表一個新的對象來了
                       只要出現function就代表一個新的函數來了
                  -->
 
-                <!-- <a href="">{{ c1.categoryName }}</a> -->
-                <!-- 第一種寫法: 所有a標籤換成router-link的話會卡, 導致內存當中組件很多,
+                  <!-- <a href="">{{ c1.categoryName }}</a> -->
+                  <!-- 第一種寫法: 所有a標籤換成router-link的話會卡, 導致內存當中組件很多,
                 所以效率不高 -->
 
-                <!-- <router-link
+                  <!-- <router-link
                   :to="{
                     name: 'search',
                     query: {
@@ -33,16 +34,11 @@
                   }"
                   >{{ c1.categoryName }}</router-link
                 > -->
-                <!-- 把聲明式導航改成編程式導航, click事件點擊之後, 是需要調用函數的, 同樣每個a標籤都添加了點擊事件, 那麼內存中就會定義很多函數, 內存占用也是比較大的, 效率雖然比聲明式導航強, 但還是不夠好 -->
 
-                <!-- 事件委派: 找公共的離自己最近的祖先元素, 這個祖先元素只有一個 -->
-                <a
-                  href="javascript:;"
-                  :data-category1Id="c1.categoryId"
-                  :data-categoryName="c1.categoryName"
-                  >{{ c1.categoryName }}</a
-                >
-                <!-- <a
+                  <!-- 
+                    把聲明式導航改成編程式導航, click事件點擊之後, 是需要調用函數的, 同樣每個a標籤都添加了點擊事件, 那麼內存中就會定義很多函數, 內存占用也是比較大的, 效率雖然比聲明式導航強, 但還是不夠好 
+                  -->
+                  <!-- <a
                   href="javascript:;"
                   @click="
                     $router.push({
@@ -55,17 +51,30 @@
                   "
                   >{{ c1.categoryName }}</a
                 > -->
-              </h3>
-              <div class="item-list clearfix">
-                <div class="subitem">
-                  <dl
-                    class="fore"
-                    v-for="(c2, index) in c1.categoryChild"
-                    :key="c2.categoryId"
+
+                  <!-- 
+                    事件委派: 找公共的離自己最近的祖先元素, 這個祖先元素只有一個 
+                      如果不用事件委派, 每個子組件都有自己的函數
+                      如果用事件委派, 每個子組件都沒有自己的函數, 用的是父組件的函數,
+                        函數只有一個, 最終全部都子組件都只對應這個函數 
+                  -->
+                  <a
+                    href="javascript:;"
+                    :data-category1Id="c1.categoryId"
+                    :data-categoryName="c1.categoryName"
+                    >{{ c1.categoryName }}</a
                   >
-                    <dt>
-                      <!-- <a href="">{{ c2.categoryName }}</a> -->
-                      <!-- <router-link
+                </h3>
+                <div class="item-list clearfix">
+                  <div class="subitem">
+                    <dl
+                      class="fore"
+                      v-for="(c2, index) in c1.categoryChild"
+                      :key="c2.categoryId"
+                    >
+                      <dt>
+                        <!-- <a href="">{{ c2.categoryName }}</a> -->
+                        <!-- <router-link
                         :to="{
                           name: 'search',
                           query: {
@@ -75,7 +84,7 @@
                         }"
                         >{{ c2.categoryName }}</router-link
                       > -->
-                      <!-- <a
+                        <!-- <a
                         href="javascript:;"
                         @click="
                           $router.push({
@@ -88,20 +97,20 @@
                         "
                         >{{ c2.categoryName }}</a
                       > -->
-                      <a
-                        href="javascript:;"
-                        :data-category2Id="c2.categoryId"
-                        :data-categoryName="c2.categoryName"
-                        >{{ c2.categoryName }}</a
-                      >
-                    </dt>
-                    <dd>
-                      <em
-                        v-for="(c3, index) in c2.categoryChild"
-                        :key="c3.categoryId"
-                      >
-                        <!-- <a href="">{{ c3.categoryName }}</a> -->
-                        <!-- <router-link
+                        <a
+                          href="javascript:;"
+                          :data-category2Id="c2.categoryId"
+                          :data-categoryName="c2.categoryName"
+                          >{{ c2.categoryName }}</a
+                        >
+                      </dt>
+                      <dd>
+                        <em
+                          v-for="(c3, index) in c2.categoryChild"
+                          :key="c3.categoryId"
+                        >
+                          <!-- <a href="">{{ c3.categoryName }}</a> -->
+                          <!-- <router-link
                           :to="{
                             name: 'search',
                             query: {
@@ -111,7 +120,7 @@
                           }"
                           >{{ c3.categoryName }}</router-link
                         > -->
-                        <!-- <a
+                          <!-- <a
                           href="javascript:;"
                           @click="
                             $router.push({
@@ -124,20 +133,21 @@
                           "
                           >{{ c3.categoryName }}</a
                         > -->
-                        <a
-                          href="javascript:;"
-                          :data-category3Id="c3.categoryId"
-                          :data-categoryName="c3.categoryName"
-                          >{{ c3.categoryName }}</a
-                        >
-                      </em>
-                    </dd>
-                  </dl>
+                          <a
+                            href="javascript:;"
+                            :data-category3Id="c3.categoryId"
+                            :data-categoryName="c3.categoryName"
+                            >{{ c3.categoryName }}</a
+                          >
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </transition>
       </div>
       <nav class="nav">
         <a href="###">服装城</a>
@@ -161,13 +171,23 @@ export default {
   data() {
     return {
       currentIndex: -1,
+      isShow: true,
     };
   },
   //組件掛載完成的時候, 就馬上發請求獲取數據, 存儲到vuex裡面,而不是直接在vue組件裡面
   mounted() {
     //dispatch是分發和觸發的意思, 和emit相同
     //本質其實就是在調用指定的action函數
-    this.$store.dispatch("getCategoryList");
+
+    //如果發請求在這這發, 只要home和search切換, 每一次
+    //home和search內部都需要重新創建typeNav組件, mounted就會重新執行
+    //請求就會重複發, 而三級分類列表數據是一樣的, 沒必要發那麼多次
+    // this.$store.dispatch("getCategoryList");
+
+    if (this.$route.path !== "/home") {
+      //證明這個組件是在search裡面的, 需要一上來就隱藏sort
+      this.isShow = false;
+    }
   },
   methods: {
     // _.throttle(renewToken, 300000, { 'trailing': false })
@@ -191,7 +211,7 @@ export default {
     toSearch(event) {
       //event是甚麼? 就是瀏覽器調用函數傳遞過來的事件對象, 代表你傳遞的$event, 只能在模板裡面出現
       let targetNode = event.target; //獲取我們的目標元素(真正發生事件的元素)
-      console.log(targetNode);
+      // console.log(targetNode);
 
       let data = targetNode.dataset; //獲取當前目標元素身上的data-屬性...組成的對象
       // console.log(data);
@@ -202,9 +222,9 @@ export default {
       //參數怎麼攜帶, 要攜帶那些東西的參數?
       //如果點擊的是a標籤, 那麼參數已經帶過來了, 就在我們的data當中
 
-      let { category1Id, category2Id, category3Id, categoryName } = data;
+      let { category1id, category2id, category3id, categoryname } = data;
 
-      if (categoryName) {
+      if (categoryname) {
         //category存在就證明點擊的就是a標籤
         let location = {
           name: "search",
@@ -214,18 +234,30 @@ export default {
         };
 
         //確定是一級還是二級還是三級的id
-        if (category1Id) {
-          query.category1Id = category1Id;
-        } else if (category2Id) {
-          query.category2Id = category2Id;
+        if (category1id) {
+          query.category1Id = category1id;
+        } else if (category2id) {
+          query.category2Id = category2id;
         } else {
-          query.category3Id = category3Id;
+          query.category3Id = category3id;
         }
 
         //找到所有的query參數以後, 最後把query放到location裡面
         location.query = query;
+
         //最終把location對象就構造好了, 跳轉
-        this.$router(location);
+        //跳轉之前, 要合併原來過來時候帶的params參數
+        //看看之前過來有沒有params參數, 有的話一起帶上
+
+        this.$router.push(location);
+      }
+    },
+    moveOutDiv() {
+      this.currentIndex = -1;
+      //移出外部我們自己添加的div, 得去判斷是在home頁面移出還是在search頁面移出
+      if (this.$route.path !== "/home") {
+        //證明這個組件是在search裡面的, 需要一上來就隱藏sort
+        this.isShow = false;
       }
     },
     /*
@@ -292,6 +324,17 @@ export default {
       position: absolute;
       background: #fafafa;
       z-index: 999;
+      &.sort-enter {
+        height: 0;
+        opacity: 0;
+      }
+      &.sort-enter-to {
+        height: 461px;
+        opacity: 1;
+      }
+      &.sort-enter-active {
+        transition: all 0.5s;
+      }
 
       .all-sort-list2 {
         .item {

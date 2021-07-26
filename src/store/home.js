@@ -1,4 +1,4 @@
-import { reqCategoryList } from "@/api";
+import { reqBannerList, reqCategoryList, reqFloorList } from "@/api";
 
 //這個是home模塊的vuex模塊
 
@@ -6,12 +6,20 @@ import { reqCategoryList } from "@/api";
 const state = {
   //存數據
   categoryList: [],
+  bannerList: [],
+  floorList: [],
 };
 
 const mutations = {
   //直接修改數據
   RECEIVE_CATEGORY(state, categoryList) {
     state.categoryList = categoryList;
+  },
+  RECEIVE_BANNER(state, bannerList) {
+    state.bannerList = bannerList;
+  },
+  RECEIVE_FLOORLIST(state, floorList) {
+    state.floorList = floorList;
   },
 };
 
@@ -27,6 +35,18 @@ const actions = {
     const result = await reqCategoryList();
     if (result.code === 200) {
       commit("RECEIVE_CATEGORY", result.data);
+    }
+  },
+  async getBannerList({ commit }) {
+    const result = await reqBannerList();
+    if (result.code === 200) {
+      commit("RECEIVE_BANNER", result.data);
+    }
+  },
+  async getFloorList({ commit }) {
+    const result = await reqFloorList();
+    if (result.code === 200) {
+      commit("RECEIVE_FLOORLIST", result.data);
     }
   },
 };

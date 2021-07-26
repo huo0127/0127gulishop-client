@@ -3,6 +3,11 @@ import Vue from "vue";
 import App from "@/App";
 import router from "@/router";
 import store from "@/store";
+
+import "swiper/css/swiper.css"; //引入swiper.css
+
+import "@/mock/mockServer"; //引入mockServer 讓模擬的接口生效
+
 // import "@/api";
 
 // 第二種測試接口請求函數方式
@@ -10,8 +15,10 @@ import store from "@/store";
 // reqCategoryList();
 
 import TypeNav from "@/components/TypeNav";
+import SlideLoop from "@/components/SlideLoop";
 //全局註冊的組件, 如果一個非路由組件被多個組件使用, 那麼定義在components, 註冊在全局
 Vue.component("TypeNav", TypeNav);
+Vue.component("SlideLoop", SlideLoop);
 
 Vue.config.productionTip = false;
 

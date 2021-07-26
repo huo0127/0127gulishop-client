@@ -327,15 +327,15 @@ leading: 是否在時間間格之前執行函數
 标签的 data-开头的属性，叫做自定义属性
 通过我们的标签对象.dataset
 
-跳转搜索页后
-
 ## 30、搜索页的 typeNav 一级列表隐藏
 
-首先这个组件被多个页面公用
-在 mounted 的时候可以判断路由是不是 home 如果不是把 isShow 改为 false, 只是初始显示组件的时候隐藏一级分类
-移入外部 div 的时候，一级分类要显示
-再次考虑外部盒子移入和移出 首页的移入移出，不会隐藏，但是其余的会移出隐藏
-点击搜索类别跳转到当前搜索页面也要把一级类别隐藏
+    1. typeNav這個組件在home當中一上來是顯示sort的, 在search當中一上來就要隱藏sort, sort
+    	需要使用v-show, 在組件mounted的時候, 需要添加判斷是不是search, 如果是search頁面, 需要把isShow改為false
+    2. 移入search頁面的全部商品分類, sort是要顯示的, 移出以後sort又是要隱藏的
+    	移入的時候: 需要在原來自己添加的div身上, 再去添加移入事件, 讓isShow變為true
+    	移出的時候: 原本自己添加的div身上我們已經寫過移出事件, 但邏輯需要添加,
+    				修改為回調函數去做
+    				移出的時候也得去判斷是不是在search移出, 如果是的需要隱藏sort
 
 ## 31、显示和隐藏一级列表的过渡效果添加
 
@@ -363,60 +363,86 @@ leading: 是否在時間間格之前執行函數
 
 到此为止我们的类别选项列表就完成了，后面开始做 ListContainer 和 Floor
 
-day04
+### day04
 
 接下来我们就要做首页的 ListContainer 和 Floor 组件
 
-34、设计 json 数据的结构和值
+## 34、设计 json 数据的结构和值
+
 banner.json
 floor.json
-35、使用 mockjs 来模拟数据接口（其实和 ajax 差不多，mock 其实就是给我们的 json 数据指定一个 url 路径去做请求）
-准备 json 数据
-使用 mockjs 来模拟提供接口地址
-在 main 中引入 mockServer.js
-在 ajax 当中修改 Ajax 中的 baseUrl 为 /mock 变为一个新的文件 mockAjax
 
-    mock会拦截我们的ajax请求，不会真正去发送请求。（发送请求是往本地发的，没有往后端发，请求的数据也是本地的）
+## 35、使用 mockjs 来模拟数据接口（其实和 ajax 差不多，mock 其实就是给我们的 json 数据指定一个 url 路径去做请求）
 
-36、mock 数据的随机语法
+1. 准备 json 数据
+2. 安裝 npm i mockjs -S
+3. 使用 mockjs 来模拟提供接口地址
+4. 在 main 中引入 mockServer.js
+5. 在 ajax 当中修改 Ajax 中的 baseUrl 为 /mock 变为一个新的文件 mockAjax
+
+   mock 会拦截我们的 ajax 请求，不会真正去发送请求。（发送请求是往本地发的，没有往后端发，请求的数据也是本地的）
+
+## 36、mock 数据的随机语法
+
 ​ 看文档
 
-37、mock 数据的 vuex 编码
-和 categoryList 的获取几乎一致，把 mock 接口当真正接口对待就好了
+## 37、動態展示 ListContainer 組件
 
-38、实现页面轮播
-swiper 的用法参考官方网站
-安装 引入 js 和 css
-swiper 必须在页面的数据结构显示完成后创建才会生效
+    和 categoryList 的获取几乎一致，把 mock 接口当真正接口对待就好了
 
-39、解决 swiper 影响多个页面的 bug
+    1.寫api裡面的接口請求函數
+    2.寫vuex(store)當中的三連環
+    3.在組件當中dispatch發請求獲取數據存儲到vuex
+    4.在組件當中computed內部, 從vuex當中把數據撈到組件
+    5.在組件當中展示我們的動態數據
+
+## 38、实现页面轮播
+
+    swiper 的用法参考官方网站
+
+    1.安装 npm i swiper@5 -S
+    2.引入 js 和 css 可以查看頁面結構是否正常, 正常就代表CSS沒問題
+    3.書寫swiper数据结构
+    4.實例化swiper實例對象
+
+    注意: swiper必須在頁面的數據結構顯示完成後創建才會生效
+
+## 39、动态显示 Floor 组件
+
+    数据要对应起来
+    和上面展示bannerList一樣的道理
+    主要是觀察獲取的動態數據去顯示
+
+## 40、解决 swiper 影响多个页面的 bug
 
     通过选择器可以指定哪个地方需要，但是不好
     通过ref最好
 
-40、swiper 创建的时间应该是在页面列表创建之后才会有效果
+## 41、swiper 创建的时间应该是在页面列表创建之后才会有效果
+
 静态页面是没问题的
 静态页面不需要等待数据，因此 monted 完全可以去创建 swiper
 
     现在我们的数据是动态的，monted内部去创建，数据还没更新到界面上，因此无效
     可以使用延迟定时器去创建 但是不好
 
-41、使用 watch + nextTick 去解决比较好
+## 42、使用 watch + nextTick 去解决比较好
+
 Vue.nextTick 和 vm.\$nextTick 效果一样
 nextTick 是在最近的一次更新 dom 之后会立即调用传入 nextTick 的回调函数
 
-42、动态显示 Floor 组件
-数据要对应起来
+## 43、Floor 当中的轮播没效果？
 
-43、Floor 当中的轮播没效果？
 它是根据数据循环创建组件对象的，外部的 floor 创建的时候
 所以数据肯定是已经获取到了，所以我们在 mounted 内部去创建 swiper
 
-44、定义可复用的轮播组件
+## 44、定义可复用的轮播组件
+
 banner 是在 watch 当中去创建 swiper 因为组件创建的时候数据不一定更新
 floor 是在 mounted 当中去创建 swiper，因为内部组件创建的时候，数据已经存在了
 
-45、查看数据的时候应该怎么去查看
+## 45、查看数据的时候应该怎么去查看
+
 看组件没有数据 接着看 vuex 没有数据 然后看 network 请求状态
 
 //到此 首页逻辑就算告一段落 下面开始就是搜索页

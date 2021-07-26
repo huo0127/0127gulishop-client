@@ -137,11 +137,18 @@ export default {
       // );
       // 解決方法2 : 修改路由器對象, 原型的方法
 
-      this.$router.push({
+      let location = {
         name: "search",
-        params: { keyword: "" || undefined },
-        query: { keyword1: this.keyword.toUpperCase() },
-      });
+        params: { keyword: this.keyword || undefined },
+        // query: { keyword1: this.keyword.toUpperCase() },
+      };
+
+      //跳轉之前一樣的, 也得判斷之前過來有沒有帶query參數, 有的話一起帶上(合併參數)
+      if (this.$route.query) {
+        location.query = this.$route.query;
+      }
+
+      this.$router.push(location);
     },
   },
 };
