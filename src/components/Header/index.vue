@@ -65,29 +65,36 @@ export default {
       keyword: "",
     };
   },
+  mounted() {
+    this.$bus.$on("clearKeyword", this.clearKeyword);
+  },
   methods: {
     toSearch() {
       /*
         一、路由傳參類: params參數和query參數
-            params參數是屬於路徑的一部份, 路由當中匹配的時候, 是要照顧到這個參數的
-            query參數是在路徑後面, 以 ? 分割 , ? 後面的 a = b & c = d 就是你的query參數
-            query參數是不屬於路徑的一部份, 路由匹配的時候, 不需要關心我這個參數
-        路由路徑帶參數的三種寫法
-        1. 字符串寫法
-         this.$router.push(
-        "/Search/" + this.keyword + "?keyword1=" + this.keyword.toUpperCase()
-        2. 模板字符串
-         this.$router.push(
-        `/search/${this.keyword}?keyword1=${this.keyword.toUpperCase()}`
-        3.對象寫法(重點)
-        this.$router.push({
-        name: "search",
-        params: { keyword: this.keyword },
-        query: { keyword1: this.keyword.toUpperCase() },
-      });
-      );
-      );
-      */
+            params參數:
+                1.往路徑後面加
+                2.是屬於路徑的一部份, 路由當中匹配的時候, 是要照顧到這
+                  個參數的
+            query參數:
+                 1.是在路徑後面, 以 ? 分割 , ? 後面的 a = b & c = d 就是你的query參數
+                 2.query參數是不屬於路徑的一部份, 路由匹配的時候, 不需要關心這個參數
+        二、路由路徑帶參數的三種寫法
+            1. 字符串寫法
+                this.$router.push(
+                "/Search/" + this.keyword + "?keyword1=" + this.keyword. toUpperCase()
+            2. 模板字符串
+                 this.$router.push(
+                `/search/${this.keyword}?keyword1=${this.keyword.toUpperCase()}`
+            3.對象寫法(重點)
+                this.$router.push({
+                name: "search",
+                params: { keyword: this.keyword },
+                query: { keyword1: this.keyword.toUpperCase() },
+                });
+                );
+                );
+                */
       /*
       面試1
           指定params参数时可不可以用path和params配置的组合?（对象写法）
@@ -113,8 +120,7 @@ export default {
           如果指定name与params配置, 但params中数据是一个"", 无法跳转，路径会出问题
       解決方法
           1. 不傳params參數 (不太好)
-          2. 首先必須在params參數可傳可不傳的前提下, 當傳遞的參數是空串的時候, 
-             傳遞成undefined, 就不會出問題
+          2. 首先必須在params參數可傳可不傳的前提下, 當傳遞的參數是空串的時候, 傳遞成undefined, 就不會出問題
 
         this.$router.push({
         name: "search",
@@ -149,6 +155,10 @@ export default {
       }
 
       this.$router.push(location);
+    },
+
+    clearKeyword() {
+      this.keyword = "";
     },
   },
 };

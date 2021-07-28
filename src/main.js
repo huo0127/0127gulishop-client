@@ -27,6 +27,9 @@ Vue.config.productionTip = false;
 // }).$mount("#app");
 
 new Vue({
+  beforeCreate() {
+    Vue.prototype.$bus = this; //安裝總線, 代表任意組件內部都可以通過this.$bus訪問到vm實例(總線)
+  },
   el: "#app",
   render: (h) => h(App),
   router, //我們所有組件內部都可以使用this.$router和this.$route

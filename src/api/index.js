@@ -56,3 +56,24 @@ export const reqFloorList = () => {
     method: "get",
   });
 };
+
+/*
+  
+請求獲取search頁面的數據
+api/v2/post/list
+請求體參數, 一個對象
+
+*/
+export const reqSearchInfo = (searchParams) => {
+  return request({
+    url: "post/list",
+    method: "post",
+    data: searchParams,
+  });
+};
+
+//searchParams是用戶搜索的參數, 這個參數是用戶再發請求的時候所傳遞的
+//這個請求參數, searchParams必須是一個對象, 可以是空對象, 但必須傳, 不能不傳
+//其實用戶發請求時, 這個參數給空對象{}, 也可以獲取到數據的, 代表獲取商品默認搜索的數據
+//測試
+// reqSearchInfo({});

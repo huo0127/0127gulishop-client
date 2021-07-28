@@ -31,6 +31,7 @@ VueRouter.prototype.push = function(location, onResolve, onRejected) {
     query: { keyword1: this.keyword.toUpperCase()
   }
 */
+
   if (onResolve === undefined && onRejected === undefined) {
     //證明調用的時候只傳遞了匹配路由對象, 沒有傳遞成功或者失敗的回調 this為實例化對象
     return originPush.call(this, location).catch(() => {});
@@ -68,6 +69,8 @@ export default new VueRouter({
       path: "/search/:keyword?", // 加 ? 代表我的params可傳可不傳
       component: Search,
       name: "search", //命名路由
+
+      //理解過程
       // params:{
       //   keyword:'abc'
       // }
