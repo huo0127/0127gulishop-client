@@ -42,24 +42,45 @@
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
+              <!-- 第一步；先把背景色動態顯示搞定 -->
+              <!-- 第二步；再把圖標可以動態顯示 -->
+              <!-- 
+                1、用啥圖標
+                2、圖標甚麼時候出現？    和背景色一樣，誰有背景色，那麼誰就有圖標
+                3、圖標向上還是向下?     和數據排序類型相關asc和desc
+              
+               -->
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <!-- <li
+                  :class="{ active: searchParams.order.split(':')[0] === '1' }"
+                > -->
+                <li :class="{ active: sortFlag === '1' }">
+                  <a href="javascript:;" @click="changeSort('1')">
+                    综合
+                    <i
+                      v-if="sortFlag === '1'"
+                      class="iconfont"
+                      :class="{
+                        iconDownarrow: sortType === 'desc',
+                        iconUparrow: sortType === 'asc',
+                      }"
+                    >
+                    </i>
+                  </a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: sortFlag === '2' }">
+                  <a href="javascript:;" @click="changeSort('2')">
+                    價格
+                    <i
+                      v-if="sortFlag === '2'"
+                      class="iconfont"
+                      :class="{
+                        iconDownarrow: sortType === 'desc',
+                        iconUparrow: sortType === 'asc',
+                      }"
+                    >
+                    </i>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -109,35 +130,15 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <!-- <div class="fr page"> -->
+          <Pagination
+            :currentPageNo="searchParams.pageNo"
+            :total="searchInfo.total"
+            :pageSize="searchParams.pageSize"
+            :continueNo="5"
+            @changePageNo="changePageNo"
+          ></Pagination>
+          <!-- </div> -->
         </div>
       </div>
     </div>
@@ -145,7 +146,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import SearchSelector from "./SearchSelector/SearchSelector";
 export default {
   name: "Search",
@@ -166,9 +167,9 @@ export default {
         trademark: "",
 
         //默認的搜索條件
-        order: "1:desc", //排序規則, 排序是後台排序的, 我們搜索的時候得給後臺一個默認的排序規則
+        order: "2:asc", //排序規則, 排序是後台排序的, 我們搜索的時候得給後臺一個默認的排序規則
         pageNo: 1, //搜索第幾頁的商品, 分頁也是後台做好的, 我們也是得告訴後台我們要幾頁數據
-        pageSize: 10, //每頁多少個商品, 告訴後台, 每頁回來多少個商品, 默認10個
+        pageSize: 2, //每頁多少個商品, 告訴後台, 每頁回來多少個商品, 默認10個
       },
     };
   },
@@ -215,6 +216,7 @@ export default {
       this.$store.dispatch("getSearchInfo", this.searchParams);
     },
 
+    //封裝方法
     handleSearchParams() {
       let {
         category1Id,
@@ -234,6 +236,36 @@ export default {
         keyword,
       }; //這樣可以保證, searchParams: 裡面一定包含了我點擊傳遞過來的搜索條件, 沒有就是undefined
 
+      //賦值this.searchParams之前，最好把屬性為空串的屬性去掉。
+      /*
+        for循環； for..in forEach for...of
+        for循環是js當中最簡單遍歷的方法，主要是針對數組進行遍歷，效率不高，但可以使用
+          continue和break。
+        for..in ；主要是用來遍歷對象的(遍歷對象的可枚舉屬性)，效率最低，原因是因為不但要
+          遍歷自身的屬性還要遍歷原型。
+        forEach ：是數組的一個方法，主要也是用來遍歷數組的，效率最高，但是不可以使用
+           continue和break。
+        for..of ：是es6裡面新加的一種遍歷方法(前提是可迭代對象)，效率沒有forEach(比其他的
+          要高)，也可以使用continue和break，for..of只能針對可迭代對象。
+
+        遍歷對象最快的方法也是使用forEach，是把對象屬性轉化為數組然後遍歷。
+        Object.keys(searchParams) 是把一個對象轉化為數組，這個數組當中存儲的是這個對象的
+          所有屬性。
+        let obj = {
+          name: 'zhaoliying',
+          age:33,
+          height:168
+        }
+        Object.keys(obj) ; // ['name','age','height']
+        以後看到這個東西 Object.keys() ，就是為了讓對象可以使用forEach方法來高效遍歷。
+
+      */
+      Object.keys(searchParams).forEach((key) => {
+        if (searchParams[key] === "") {
+          delete searchParams[key];
+        }
+      });
+
       this.searchParams = searchParams;
     },
     //刪除分類名稱搜索條件, 重新發送請求
@@ -244,7 +276,11 @@ export default {
       this.searchParams.categoryName = undefined;
       // this.getSearchInfo();
       //這裡刪除不會動我的原來路徑, 所以這樣發請求不行, 我們得讓路徑發生變化
-      this.$router.push({ name: "search", params: this.$route.params });
+      // this.$router.push({ name: "search", params: this.$route.params });
+
+      this.searchParams.pageNo = 1;
+
+      this.$router.replace({ name: "search", params: this.$route.params });
       //目的是讓路徑變化
       // 然後路徑變化了, 為什麼就發送請求了? 而且參數也對了?
       //這裡發請求依賴的是watch裡面的代碼
@@ -255,25 +291,30 @@ export default {
       this.searchParams.keyword = undefined;
       this.$bus.$emit("clearKeyword"); //通知header清空關鍵字
       // this.getSearchInfo();
-      this.$router.push({ name: "search", query: this.$route.query });
+      // this.$router.push({ name: "search", query: this.$route.query });
+
+      this.searchParams.pageNo = 1;
+      this.$router.replace({ name: "search", query: this.$route.query });
       // 然後路徑變化了, 為什麼就發送請求了? 而且參數也對了?
       //這裡發請求依賴的是watch裡面的代碼
     },
 
     //用戶點擊品牌後, 根據品牌搜索重新發送請求
     searchForTrademark(trademark) {
-      //trademark最終參數要去參考接口文檔
+      //trademark最終參數要去參考接口文檔 "ID:品牌名称"
       this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      this.searchParams.pageNo = 1;
       this.getSearchInfo();
     },
 
     //刪除品牌搜索條件後, 重新發送請求
     removeTrademark() {
       this.searchParams.trademark = undefined;
+      this.searchParams.pageNo = 1;
       this.getSearchInfo();
     },
 
-    //用戶點擊平台屬性值, 根據平台屬性搜索重新發送請求
+    //用戶點擊平台屬性值, 根據平台屬性搜索重新發送請求 : ["属性ID:属性值:属性名"]
     searchForProps(attrValue, attr) {
       let prop = `${attr.attrId}:${attrValue}:${attr.attrName}`;
 
@@ -296,6 +337,7 @@ export default {
         //證明已經存在這個屬性, 發過請求了, 就別再繼續發了
         return;
       }
+      this.searchParams.pageNo = 1;
       this.searchParams.props.push(prop);
       this.getSearchInfo();
     },
@@ -303,12 +345,54 @@ export default {
     //用戶刪除某個屬性值搜索條件, 重新發送請求
     removeProp(index) {
       this.searchParams.props.splice(index, 1);
+      this.searchParams.pageNo = 1;
+
+      this.getSearchInfo();
+    },
+
+    //點擊綜合或者價格排序的回調
+    changeSort(sortFlag) {
+      //首先判斷用戶點擊的是不是和原來的排序標誌一樣
+      //獲取到原來的排序標誌和排序類型
+      // let originSortFlag = this.searchParams.order.split(":")[0];
+      let originSortFlag = this.sortFlag;
+      let originSortType = this.sortType;
+      let newOrder = "";
+      //判斷用戶點擊的是不是還是原來的
+      if (sortFlag === originSortFlag) {
+        //假設用戶點的排序標誌和原來的是一樣的，證明點擊的還是同一個排序，那麼我們需要把排序類型改變
+        newOrder = `${originSortFlag}:${
+          originSortType === "asc" ? "desc" : "asc"
+        }`;
+      } else {
+        //假設用戶點擊的排序標誌和原來的是不一樣的，證明點的不是同一個排序，那麼我們需要把排序標誌改變，排序類型默認
+        newOrder = `${sortFlag}:desc`;
+      }
+
+      this.searchParams.order = newOrder; //把排序規則的數據修改
+      this.searchParams.pageNo = 1;
+      this.getSearchInfo(); //重新發送請求獲取新排序的數據顯示
+    },
+
+    //分頁器點擊切換頁碼時，觸發的自定義回調
+    changePageNo(page) {
+      this.searchParams.pageNo = page;
       this.getSearchInfo();
     },
   },
 
   computed: {
     ...mapGetters(["goodsList"]),
+    ...mapState({
+      searchInfo: (state) => state.search.searchInfo,
+    }),
+    //優化代碼
+    sortFlag() {
+      return this.searchParams.order.split(":")[0];
+    },
+    sortType() {
+      return this.searchParams.order.split(":")[1];
+    },
   },
 
   watch: {

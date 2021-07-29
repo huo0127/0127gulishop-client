@@ -154,7 +154,13 @@ export default {
         location.query = this.$route.query;
       }
 
-      this.$router.push(location);
+      //如果是從home跳search，就push。
+      //如果是search跳search，就replace。
+      if (this.$route.path !== "/home") {
+        this.$router.replace(location);
+      } else {
+        this.$router.push(location);
+      }
     },
 
     clearKeyword() {

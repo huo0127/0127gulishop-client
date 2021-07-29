@@ -202,7 +202,7 @@ export default {
     moveInItem: throttle(
       function(index) {
         this.currentIndex = index;
-        console.log(index);
+        // console.log(index);
       },
       20,
       { trailing: false }
@@ -248,8 +248,15 @@ export default {
         //最終把location對象就構造好了, 跳轉
         //跳轉之前, 要合併原來過來時候帶的params參數
         //看看之前過來有沒有params參數, 有的話一起帶上
+        if (this.$route.params) {
+          location.params = this.$route.params;
+        }
 
-        this.$router.push(location);
+        //如果是從home跳search，就push
+        //如果是search跳search，就replace
+        if (this.$route.path !== "/home") {
+          this.$router.replace(location);
+        } else this.$router.push(location);
       }
     },
     moveOutDiv() {

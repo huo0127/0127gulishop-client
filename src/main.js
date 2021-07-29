@@ -16,9 +16,11 @@ import "@/mock/mockServer"; //引入mockServer 讓模擬的接口生效
 
 import TypeNav from "@/components/TypeNav";
 import SlideLoop from "@/components/SlideLoop";
+import Pagination from "@/components/Pagination";
 //全局註冊的組件, 如果一個非路由組件被多個組件使用, 那麼定義在components, 註冊在全局
 Vue.component("TypeNav", TypeNav);
 Vue.component("SlideLoop", SlideLoop);
+Vue.component("Pagination", Pagination);
 
 Vue.config.productionTip = false;
 
