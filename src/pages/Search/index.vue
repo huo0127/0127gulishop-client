@@ -57,6 +57,8 @@
                 <li :class="{ active: sortFlag === '1' }">
                   <a href="javascript:;" @click="changeSort('1')">
                     综合
+
+                    <!-- 鉤子標籤，i標籤其實就代表我們的圖標 -->
                     <i
                       v-if="sortFlag === '1'"
                       class="iconfont"
@@ -94,9 +96,12 @@
               >
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank">
-                      <img :src="goods.defaultImg"
-                    /></a>
+                    <router-link :to="'/detail/' + goods.id">
+                      <img :src="goods.defaultImg" />
+                    </router-link>
+
+                    <!-- <img :src="goods.defaultImg" />
+                    <a href="item.html" target="_blank"> </a> -->
                   </div>
                   <div class="price">
                     <strong>
@@ -105,12 +110,15 @@
                     </strong>
                   </div>
                   <div class="attr">
-                    <a
+                    <router-link :to="'/detail/' + goods.id">
+                      {{ goods.title }}
+                    </router-link>
+                    <!-- <a
                       target="_blank"
                       href="item.html"
                       title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
                       >{{ goods.title }}</a
-                    >
+                    > -->
                   </div>
                   <div class="commit">
                     <i class="command">已有<span>2000</span>人评价</i>
@@ -137,8 +145,8 @@
             :pageSize="searchParams.pageSize"
             :continueNo="5"
             @changePageNo="changePageNo"
-          ></Pagination>
-          <!-- </div> -->
+          >
+          </Pagination>
         </div>
       </div>
     </div>
@@ -167,7 +175,7 @@ export default {
         trademark: "",
 
         //默認的搜索條件
-        order: "2:asc", //排序規則, 排序是後台排序的, 我們搜索的時候得給後臺一個默認的排序規則
+        order: "2:desc", //排序規則, 排序是後台排序的, 我們搜索的時候得給後臺一個默認的排序規則
         pageNo: 1, //搜索第幾頁的商品, 分頁也是後台做好的, 我們也是得告訴後台我們要幾頁數據
         pageSize: 2, //每頁多少個商品, 告訴後台, 每頁回來多少個商品, 默認10個
       },

@@ -77,3 +77,23 @@ export const reqSearchInfo = (searchParams) => {
 //其實用戶發請求時, 這個參數給空對象{}, 也可以獲取到數據的, 代表獲取商品默認搜索的數據
 //測試
 // reqSearchInfo({});
+
+/*
+  請求獲取詳情數據
+ /api/v2/get/item/
+*/
+export const reqDetailInfo = (skuId) => {
+  return request({
+    url: `get/item/${skuId}`,
+    method: "get",
+  });
+};
+
+//請求添加購物車
+// /api/v2/post/cart/addToCart/{skuId}/{skuNum}
+export const reqAddOrUpdateShopCart = (skuId, skuNum) => {
+  return request({
+    url: `post/cart/addToCart/${skuId}/${skuNum}`,
+    method: "post",
+  });
+};

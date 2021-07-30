@@ -57,6 +57,11 @@ export default {
     total: {
       type: Number,
       default: 0,
+      /*
+        必須給個默認值，否則會報一個錯誤，說total是undefined。
+        seachInfo是根據請求回來的數據，請求回來的數據是需要時間的。當
+          searchInfo沒回來的時候就是空對象，因此傳遞過來就是undefined。
+      */
     },
     pageSize: {
       type: Number,

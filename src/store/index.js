@@ -5,6 +5,8 @@ Vue.use(Vuex);
 import user from "./user";
 import home from "./home";
 import search from "./search";
+import detail from "./detail";
+import shopcart from "./shopcart";
 
 //vuex當中的4個核心概念
 const state = {
@@ -35,5 +37,7 @@ export default new Vuex.Store({
     home,
     user,
     search,
+    detail,
+    shopcart,
   },
 });
