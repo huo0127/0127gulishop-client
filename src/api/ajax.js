@@ -11,6 +11,7 @@ import axios from "axios";
 //引入mprogress相關的js和css
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import store from "@/store";
 
 //以後只要是對axios二次封裝, 不會在axios身上去封裝, 而是創建一個新的axios實例去進行封裝
 //axios.create() 創建一個新的和axios具有相同功能的一個實例
@@ -32,6 +33,12 @@ service.interceptors.request.use(
     //這個請求報文, 最後一定要返回去, 因為還要繼續往下走
     //在這裡我們可以添加額外的功能, 也可以給請求頭添加需要的屬性
     NProgress.start(); //開啟進度條
+
+    //請求頭內部需要添加臨時標識，後期每個請求都會戴上這個臨時標識
+    let userTempId = store.state.user.userTempId;
+    if (userTempId) {
+      config.headers.userTempId = userTempId;
+    }
 
     return config;
   }

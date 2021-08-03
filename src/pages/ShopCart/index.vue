@@ -11,34 +11,53 @@
         <div class="cart-th6">操作</div>
       </div>
       <div class="cart-body">
-        <ul class="cart-list" v-for="(cart,index) in " :key="">
+        <ul
+          class="cart-list"
+          v-for="(cart, index) in cartInfoList"
+          :key="cart.id"
+        >
           <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" />
+            <input
+              type="checkbox"
+              name="chk_list"
+              :checked="cart.isChecked"
+              @click="updateOneChecked(cart)"
+            />
           </li>
           <li class="cart-list-con2">
-            <img src="./images/goods1.png" />
+            <img :src="cart.imgUrl" />
             <div class="item-msg">
-              米家（MIJIA） 小米小白智能摄像机增强版
-              1080p高清360度全景拍摄AI增强
+              {{ cart.skuName }}
             </div>
           </li>
 
           <li class="cart-list-con4">
-            <span class="price">399.00</span>
+            <span class="price">{{ cart.skuPrice }}</span>
           </li>
           <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
+            <a
+              href="javascript:void(0)"
+              class="mins"
+              @click="changeCartNum(cart, -1, true)"
+              >-</a
+            >
             <input
               autocomplete="off"
               type="text"
-              value="1"
+              :value="cart.skuNum"
               minnum="1"
               class="itxt"
+              @change="changeCartNum(cart, $event.target.value * 1, false)"
             />
-            <a href="javascript:void(0)" class="plus">+</a>
+            <a
+              href="javascript:void(0)"
+              class="plus"
+              @click="changeCartNum(cart, 1, true)"
+              >+</a
+            >
           </li>
           <li class="cart-list-con6">
-            <span class="sum">399</span>
+            <span class="sum">{{ cart.skuNum * cart.skuPrice }}</span>
           </li>
           <li class="cart-list-con7">
             <a href="#none" class="sindelet">删除</a>
@@ -50,7 +69,7 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" />
+        <input class="chooseAll" type="checkbox" v-model="isCheckAll" />
         <span>全选</span>
       </div>
       <div class="option">
@@ -59,10 +78,13 @@
         <a href="#none">清除下柜商品</a>
       </div>
       <div class="money-box">
-        <div class="chosed">已选择 <span>0</span>件商品</div>
+        <div class="chosed">
+          已选择 <span>{{ checkedNum }}</span
+          >件商品
+        </div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
-          <i class="summoney">0</i>
+          <i class="summoney">{{ allMoney }}</i>
         </div>
         <div class="sumbtn">
           <a class="sum-btn" href="###" target="_blank">结算</a>
@@ -73,7 +95,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "ShopCart",
   mounted() {
@@ -85,16 +107,116 @@ export default {
       //這邊不需要根據請求成功或失敗有後續的操作，所以我們沒必要去拿結果
       //只需要發請求，讓數據存儲vuex裡面
     },
-  },
-  computed: {
-    ...mapState({
-      //這個數據拿到的是外部的那個數組，不是我們要的購物車列表
-      shopCartInfo: (state) => state.shopCart.shopCartInfo,
-    }),
 
-    shopCartInfo() {
-      //這個數據拿到的是我們的購物車列表
-      return this.shopCartList[0].cartInfoList || [];
+    //修改購物車商品數量
+    async changeCartNum(cart, disNum, flag) {
+      //disNum 如果是點擊加號或減號，我們傳遞過來的是1和-1，是變化的量
+      //disNum 如果是輸入框change傳過來的，那麼這個disNum是最終的量
+      //flag 是用於判斷用戶是點擊加號減號進來的還是輸入框失去焦點進來的
+      let originNum = cart.skuNum;
+
+      if (flag) {
+        //證明是點擊加號減號進來的，我們要保證最終的總數必須至少是1
+        //獲取原來本身的數量
+        if (originNum + disNum < 1) {
+          //證明原本的數量變化之後，比1還小，那麼我們應該修正disNum
+          //如果最終比1還小，那麼disNum就應該就應該修正，修正的結果讓他們剛好是1
+          disNum = 1 - originNum;
+        }
+      } else {
+        //證明這個裡面傳遞是input輸入的值，disNum他代表最終的值
+        //disNum此時代表的是最終的值
+        if (disNum < 1) {
+          //disNum此時代表的是變化的量
+          disNum = 1 - originNum;
+        } else {
+          //等號左邊的disNum代表的是變化的量，等號右邊的disNum代表是最終的
+          disNum = disNum - originNum;
+        }
+      }
+      //經歷了上面的if-else，到這裡disNum肯定是變化的量，不管是點擊加減號還是輸入框輸入，都是正確的變化的量
+      //發請求修改數量
+      try {
+        await this.$store.dispatch("addOrUpdateShopCart", {
+          skuId: cart.skuId,
+          skuNum: disNum, //disNum剛計算出來的變化的量
+        });
+        alert("修改成功");
+        //如果請求成功重新獲取購物車列表數據
+        this.getShopCartInfo();
+      } catch (error) {
+        alert(error.message);
+      }
+    },
+
+    //修改購物車選中狀態，單個修改
+    async updateOneChecked(cart) {
+      try {
+        //發請求修改
+        await this.$store.dispatch("updateCartIsCheck", {
+          skuId: cart.skuId,
+          isChecked: cart.isChecked ? 0 : 1,
+        });
+        //成功就重新獲取列表數據
+        alert("修改成功");
+        this.getShopCartInfo();
+        //失敗就提示
+      } catch (error) {
+        alert(error.message);
+      }
+    },
+  },
+
+  computed: {
+    ...mapGetters(["cartInfo"]),
+
+    cartInfoList() {
+      return this.cartInfo.cartInfoList || [];
+    },
+
+    //統計已選的件數
+    checkedNum() {
+      return this.cartInfoList.reduce((prev, item) => {
+        if (item.isChecked) {
+          prev += item.skuNum;
+        }
+        return prev;
+      }, 0);
+    },
+
+    //統計總價
+    allMoney() {
+      return this.cartInfoList.reduce((prev, item) => {
+        if (item.isChecked) {
+          prev += item.skuNum * item.skuPrice;
+        }
+        return prev;
+      }, 0);
+    },
+
+    //計算全選數據
+    isCheckAll: {
+      get() {
+        //讀取的
+        return this.cartInfoList.every((item) => item.isChecked);
+      },
+      async set(val) {
+        //val獲取到的是用戶點擊全選之後，多選框的checked屬性值，是個布爾值
+        //修改的
+        //在這裡我們發請求，修改所有的購物車的選中狀態
+        // this.$store.dispatch("updateCartIsCheckAll", val ? 1 : 0); 就是Promise.all返回的新的promise
+        try {
+          const result = await this.$store.dispatch(
+            "updateCartIsCheckAll",
+            val ? 1 : 0
+          );
+          console.log(result); //(4) ["ok", "ok", "ok", "ok"]
+          alert("修改成功");
+          this.getShopCartInfo();
+        } catch (error) {
+          alert("修改錯誤" + error.message);
+        }
+      },
     },
   },
 };

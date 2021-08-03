@@ -1,8 +1,12 @@
 //這個是user模塊的vuex模塊
 
+import { getUserTempId } from "@/utils/userabout";
+
 //vuex當中的4個核心概念
 const state = {
   //存數據
+  //getUserTempId() 是用來專門生成用戶的臨時標識的
+  userTempId: getUserTempId(),
 };
 
 const mutations = {

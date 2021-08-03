@@ -62,6 +62,7 @@ export const reqFloorList = () => {
 請求獲取search頁面的數據
 api/v2/post/list
 請求體參數, 一個對象
+POST
 
 */
 export const reqSearchInfo = (searchParams) => {
@@ -81,6 +82,7 @@ export const reqSearchInfo = (searchParams) => {
 /*
   請求獲取詳情數據
  /api/v2/get/item/
+ GET
 */
 export const reqDetailInfo = (skuId) => {
   return request({
@@ -89,12 +91,33 @@ export const reqDetailInfo = (skuId) => {
   });
 };
 
-//請求添加購物車
+// 請求添加購物車(修改購物車的商品數量)
 // /api/v2/post/cart/addToCart/{skuId}/{skuNum}
+// POST
 export const reqAddOrUpdateShopCart = (skuId, skuNum) => {
   return request({
     url: `post/cart/addToCart/${skuId}/${skuNum}`,
     method: "post",
     data: {},
+  });
+};
+
+// 請求獲取購物車列表
+// /api/v2/get/cart/cartList
+// GET
+export const reqShopCartInfo = () => {
+  return request({
+    url: "get/cart/cartList",
+    method: "get",
+  });
+};
+
+//請求修改購物車選中狀態
+// api/v2/get/cart/checkCart/{skuId}/{isChecked}
+// GET
+export const reqUpdateCartIsCheck = (skuId, isChecked) => {
+  return request({
+    url: `get/cart/checkCart/${skuId}/${isChecked}`,
+    method: "get",
   });
 };
