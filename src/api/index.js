@@ -95,5 +95,6 @@ export const reqAddOrUpdateShopCart = (skuId, skuNum) => {
   return request({
     url: `post/cart/addToCart/${skuId}/${skuNum}`,
     method: "post",
+    data: {},
   });
 };

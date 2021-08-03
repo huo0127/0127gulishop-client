@@ -29,7 +29,7 @@ const actions = {
 
   如果沒有return結果而是拋出錯誤，promise也是失敗的，原因就是拋出的錯誤原因
 */
-  async AddOrUpdateShopCart({ commit }, { skuId, skuNum }) {
+  async addOrUpdateShopCart({ commit }, { skuId, skuNum }) {
     const result = await reqAddOrUpdateShopCart(skuId, skuNum);
     // 這個寫法async函數返回的promise永遠成功，不合常理
     // 但對於我們寫代碼可行

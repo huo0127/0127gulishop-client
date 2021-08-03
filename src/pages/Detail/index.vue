@@ -129,7 +129,7 @@
                   比如從home去search，從search去詳情，跳轉的時候不需要發請求，而是跳轉過去後發請求拿數據。
                   而加入購物車不同，當我們點擊添加購物車的時候，我們得需要先發請求給後台，後台需要把這個購物車訊息存儲數據庫，請求成功之後，會返回給我們訊息。我們根據訊息再去跳轉。否則後台有可能添加數據庫失敗，而我們已經跳到下個頁面，就出現問題。 
                 -->
-                -->
+
                 <a href="javascript:" @click="addShopCart">加入购物车</a>
               </div>
             </div>
@@ -447,7 +447,7 @@ export default {
         //請求成功
         await this.$store.dispatch("addOrUpdateShopCart", {
           skuId: this.skuId,
-          skuNum: this.skuNm,
+          skuNum: this.skuNum,
         });
         //第二步：根據請求添加購物車返回的訊息決定是否跳轉到添加購物車成功頁面
         //請求成功跳轉到添加購物車成功頁面
@@ -460,8 +460,8 @@ export default {
         //localStorage(真正的永久存儲)
         //sessionStorage(關閉瀏覽器數據就不再了)
 
-        sessionStorage.setItem("skuInfo_key", JSON.stringify(this.skuInfo));
-        this.$route.push("/addcartsuccess?skuNum=" + this.skuNum);
+        sessionStorage.setItem("SKUINFO_KEY", JSON.stringify(this.skuInfo));
+        this.$router.push("/addcartsuccess?skuNum=" + this.skuNum);
       } catch (error) {
         //請求失敗
         alert(error.message);
