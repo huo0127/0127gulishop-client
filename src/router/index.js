@@ -5,6 +5,7 @@ import VueRouter from "vue-router";
 vue.use(VueRouter);
 
 import routes from "./routes";
+import store from "@/store";
 
 /* 
     VueRouter 是路由器對象的構造函數
@@ -55,7 +56,7 @@ VueRouter.prototype.replace = function(location, onResolve, onRejected) {
 };
 
 // 3.向外暴露一個路由器對象
-export default new VueRouter({
+const router = new VueRouter({
   //配置路由
   routes,
   //配置滾動行為，跳轉到新的路由介面滾動條位置。
@@ -63,3 +64,51 @@ export default new VueRouter({
     return { x: 0, y: 0 };
   },
 });
+
+//註冊全局前置導航守衛，用來對token校驗(根據token獲取用戶訊息)
+router.beforeEach(async (to, from, next) => {
+  /*
+    to 跳轉的目的地路由對象
+    from 從哪來的路對象
+    next是一個函數
+    根據參數不同，功能不同
+    next() 代表無條件放行
+    next('/')代表強制跳轉到指定的位置
+    next(false)代表甚麼都不做，原地不動
+  */
+
+  //第一步：守衛攔截住，先去獲取用戶的token和用戶的訊息
+  let token = store.state.user.token;
+  let userInfo = store.state.user.userInfo.name;
+
+  if (token) {
+    //如果token是存在的，代表用戶登入過
+    if (to.path === "/login") {
+      //用戶已經登入過了，還要往登入頁面跳轉，沒必要，讓他回首頁
+      next("/");
+    } else {
+      //如果用戶已經登入了，但是跳轉的不再是登入頁，那麼我們得看用戶的訊息獲取了沒
+      if (userInfo) {
+        //如果用戶的訊息已經獲取，無條件放行
+        next();
+      } else {
+        //用戶已經登入，但是用戶還沒有獲取用戶訊息，在這裡就需要請求獲取用戶訊息
+        try {
+          //如果獲取用戶訊息成功，用戶訊息拿到就無條件放行
+          await store.dispatch("getUserInfo"); //用戶根據token獲取用戶訊息
+          next();
+        } catch (error) {
+          //根據token獲取用戶訊息失敗，代表token可能過期
+          //把用戶過期的token清理掉，重新跳轉到登入頁
+          store.dispatch("clearToken");
+          next("/login");
+        }
+      }
+    }
+  } else {
+    //用戶根本沒登入，目前我們甚麼都不做，直接放行，後面我們是需要添加功能的。
+    next();
+  }
+});
+
+export default router;

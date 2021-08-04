@@ -121,3 +121,75 @@ export const reqUpdateCartIsCheck = (skuId, isChecked) => {
     method: "get",
   });
 };
+
+//請求刪除購物車數據
+// api/v2/delete/cart/deleteCart/{skuId}
+// DELETE
+export const reqDeleteShopCart = (skuId) => {
+  return request({
+    url: `delete/cart/deleteCart/${skuId}`,
+    method: "delete",
+    data: {},
+  });
+};
+
+//請求註冊用戶
+// post/user/passport/register
+// POST
+// 參數: 請求體 code phone password
+export const reqUserRegister = (userInfo) => {
+  return request({
+    url: "post/user/passport/register",
+    method: "post",
+    data: userInfo,
+  });
+};
+
+//請求獲取用戶註冊驗證碼
+// /api/v2/get/user/passport/sendCode/{phone}
+//get
+export const reqGetCode = (phone) => {
+  return request({
+    url: `get/user/passport/sendCode/${phone}`,
+    method: "get",
+  });
+};
+
+//請求用戶登入
+// /api/v2/post/user/passport/login
+// POST
+// 返回   這邊返回的東西不嚴謹，按道理來講
+// "data": {
+//   "nickName": "Administrator",
+//   "name": "Admin",
+//   "userId": 2,
+//   "token": "cb8f29208f6648bc8226da2379d5fe6e"
+// },
+export const reqUserLogin = (userInfo) => {
+  return request({
+    url: "post/user/passport/login",
+    method: "post",
+    data: userInfo,
+  });
+};
+
+//根據token請求獲取用戶的訊息
+// /api/v2/get/user/passport/auth/getUserInfo
+//參數token已經在請求頭中添加了
+// GET
+export const reqGetUserInfo = () => {
+  return request({
+    url: "get/user/passport/auth/getUserInfo",
+    method: "get",
+  });
+};
+
+//請求退出登入
+// /api/v2/get/user/passport/logout
+// GET
+export const reqUserLogout = () => {
+  return request({
+    url: "get/user/passport/logout",
+    method: "get",
+  });
+};

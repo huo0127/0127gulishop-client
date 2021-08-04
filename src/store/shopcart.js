@@ -3,6 +3,7 @@ import {
   reqAddOrUpdateShopCart,
   reqShopCartInfo,
   reqUpdateCartIsCheck,
+  reqDeleteShopCart,
 } from "@/api";
 
 //vuex當中的4個核心概念
@@ -100,6 +101,27 @@ const actions = {
         skuId: item.skuId,
         isChecked,
       });
+      promises.push(promise);
+    });
+    return Promise.all(promises);
+  },
+
+  //刪除單個
+  async deleteShopCart({ commit }, skuId) {
+    const result = await reqDeleteShopCart(skuId);
+    if (result.code === 200) {
+      return "ok";
+    } else {
+      return Promise.reject(new Error("failed"));
+    }
+  },
+
+  //刪除多個
+  deleteShopCartAll({ commit, getters, dispatch }) {
+    let promises = [];
+    getters.cartInfo.cartInfoList.forEach((item) => {
+      if (!item.isChecked) return;
+      let promise = dispatch("deleteShopCart", item.skuId);
       promises.push(promise);
     });
     return Promise.all(promises);

@@ -60,7 +60,9 @@
             <span class="sum">{{ cart.skuNum * cart.skuPrice }}</span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
+            <a href="javascript:;" class="sindelet" @click="deleteOne(cart)"
+              >删除</a
+            >
             <br />
             <a href="#none">移到收藏</a>
           </li>
@@ -69,11 +71,16 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
+        <!-- 
+            v-model
+              單個複選框，綁定的是布爾值，:checked屬性
+              多個複選框，綁定value值，用數組收集value值
+         -->
         <input class="chooseAll" type="checkbox" v-model="isCheckAll" />
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a href="javascript:;" @click="deleteAll">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
@@ -165,6 +172,28 @@ export default {
         alert(error.message);
       }
     },
+
+    //刪除單個購物車數據
+    async deleteOne(cart) {
+      try {
+        await this.$store.dispatch("deleteShopCart", cart.skuId);
+        alert("刪除成功");
+        this.getShopCartInfo();
+      } catch (error) {
+        alert("刪除失敗" + error.message);
+      }
+    },
+
+    //刪除多個購物車數據
+    async deleteAll() {
+      try {
+        await this.$store.dispatch("deleteShopCartAll");
+        alert("刪除多個成功");
+        this.getShopCartInfo();
+      } catch (error) {
+        alert("刪除多個失敗" + error.message);
+      }
+    },
   },
 
   computed: {
@@ -201,8 +230,8 @@ export default {
         return this.cartInfoList.every((item) => item.isChecked);
       },
       async set(val) {
-        //val獲取到的是用戶點擊全選之後，多選框的checked屬性值，是個布爾值
         //修改的
+        //val獲取到的是用戶點擊全選之後，多選框的checked屬性值，是個布爾值
         //在這裡我們發請求，修改所有的購物車的選中狀態
         // this.$store.dispatch("updateCartIsCheckAll", val ? 1 : 0); 就是Promise.all返回的新的promise
         try {

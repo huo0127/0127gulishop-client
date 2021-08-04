@@ -40,6 +40,12 @@ service.interceptors.request.use(
       config.headers.userTempId = userTempId;
     }
 
+    //登入成功後，需要把token添加道請求頭中，從今以後所有的請求當中都要帶token
+    let token = store.state.user.token;
+    if (token) {
+      config.headers.token = token;
+    }
+
     return config;
   }
   //請求攔截器當中失敗的回調一般不寫, 因為失敗了, 也就沒有然後了
