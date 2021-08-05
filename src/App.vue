@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- <el-button type="danger" icon="el-icon-delete"></el-button> -->
     <Header></Header>
     <router-view></router-view>
     <!-- 這樣寫是可以的, 但後期頁面多, 就會寫得很長 -->

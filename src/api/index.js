@@ -193,3 +193,63 @@ export const reqUserLogout = () => {
     method: "get",
   });
 };
+
+//請求用戶收貨地址訊息
+// /api/v2/get/user/userAddress/auth/findUserAddressList
+//get
+export const reqUserAddressList = () => {
+  return request({
+    url: "get/user/userAddress/auth/findUserAddressList",
+    method: "get",
+  });
+};
+
+//請求獲取訂單交易頁面
+// /api/v2/get/order/auth/trade
+// get
+export const reqTradeInfo = () => {
+  return request({
+    url: "get/order/auth/trade",
+    method: "get",
+  });
+};
+
+//請求提交訂單，創建訂單
+///api/v2/post/order/auth/submitOrder?tradeNo={tradeNo}
+// post
+export const reqSubmitOrder = (tradeNo, tradeInfo) => {
+  return request({
+    url: `post/order/auth/submitOrder?tradeNo=${tradeNo}`,
+    method: "post",
+    data: tradeInfo,
+  });
+};
+
+//請求獲取支付訊息
+//api/v2/get/payment/weixin/createNative/${orderId}
+//get
+export const reqPayInfo = (orderId) => {
+  return request({
+    url: `get/payment/weixin/createNative/${orderId}`,
+    method: "get",
+  });
+};
+
+//請求獲取訂單支付狀態
+// api/v2/get/payment/weixin/queryPayStatus/${orderId}
+// get
+export const reqPayStatus = (orderId) => {
+  return request({
+    url: `get/payment/weixin/queryPayStatus/${orderId}`,
+    method: "get",
+  });
+};
+
+// 最終暴露的是
+// {
+//   reqAddOrUpdateShopCart,
+//   reqBannerList
+//   ...
+// }
+
+//import * as API from '@/api'

@@ -7,6 +7,7 @@ import {
   reqUserLogin,
   reqGetUserInfo,
   reqUserLogout,
+  reqUserAddressList,
 } from "@/api";
 
 //vuex當中的4個核心概念
@@ -22,6 +23,7 @@ const state = {
   token: localStorage.getItem("TOKEN_KEY"),
 
   userInfo: {}, //根據token獲取用戶訊息
+  userAddressLis: [],
 };
 
 const mutations = {
@@ -47,6 +49,10 @@ const mutations = {
   RESET_USER(state) {
     state.token = "";
     state.userInfo = {};
+  },
+
+  RECEIVE_USERADDRESSLIST(state, userAddressLis) {
+    state.userAddressLis = userAddressLis;
   },
 };
 
@@ -118,6 +124,14 @@ const actions = {
       return "ok";
     } else {
       return Promise.reject(new Error("failed"));
+    }
+  },
+
+  //獲取用戶收貨地址訊息
+  async getUserAddressList({ commit }) {
+    const result = await reqUserAddressList();
+    if (result.code === 200) {
+      commit("RECEIVE_USERADDRESSLIST", result.data);
     }
   },
 };

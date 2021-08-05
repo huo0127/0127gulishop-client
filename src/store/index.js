@@ -7,6 +7,7 @@ import home from "./home";
 import search from "./search";
 import detail from "./detail";
 import shopcart from "./shopcart";
+import trade from "./trade";
 
 //vuex當中的4個核心概念
 const state = {
@@ -39,5 +40,11 @@ export default new Vuex.Store({
     search,
     detail,
     shopcart,
+    trade,
   },
 });
+
+//最終暴露
+// {
+//   default:store
+// }
