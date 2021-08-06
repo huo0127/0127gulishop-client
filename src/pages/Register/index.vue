@@ -11,36 +11,75 @@
         </span>
       </h3>
       <div class="content">
-        <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号" v-model="phone" />
-        <span class="error-msg">错误提示信息</span>
+        <label>手機號碼:</label>
+        <!-- 
+          表單類元素當中必須要使用name屬性指定驗證的字段名稱
+         -->
+        <input
+          placeholder="请输入你的手機號碼"
+          v-model="phone"
+          name="phone"
+          v-validate="{ required: true, regex: /^1\d{10}$/ }"
+          :class="{ invalid: errors.has('phone') }"
+        />
+        <!-- 獲取phone字段驗證錯誤的提示訊息 -->
+        <span class="error-msg">{{ errors.first("phone") }}</span>
+        <!-- <input type="text" placeholder="请输入你的手机号" v-model="phone" />
+        <span class="error-msg">错误提示信息</span> -->
       </div>
+
       <div class="content">
-        <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码" v-model="code" />
+        <label>驗證碼:</label>
+        <input
+          placeholder="请输入驗證碼"
+          v-model="code"
+          name="code"
+          v-validate="{ required: true, regex: /^\d{6}$/ }"
+          :class="{ invalid: errors.has('code') }"
+        />
+        <!-- 獲取code字段驗證錯誤的提示訊息 -->
+        <span class="error-msg">{{ errors.first("code") }}</span>
+        <!-- <input type="text" placeholder="请输入验证码" v-model="code" /> -->
         <button style="height:38px;width:100px" @click="getCode">
           獲取驗證碼
         </button>
-        <span class="error-msg">错误提示信息</span>
       </div>
+
       <div class="content">
         <label>登录密码:</label>
         <input
-          type="text"
-          placeholder="请输入你的登录密码"
+          placeholder="请输入密碼"
           v-model="password"
+          name="password"
+          v-validate="{ required: true, regex: /^[0-9 A-Z a-z]{6,20}$/ }"
+          :class="{ invalid: errors.has('password') }"
         />
-        <span class="error-msg">错误提示信息</span>
+        <!-- 獲取password字段驗證錯誤的提示訊息 -->
+        <span class="error-msg">{{ errors.first("password") }}</span>
       </div>
       <div class="content">
-        <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码" v-model="password2" />
-        <span class="error-msg">错误提示信息</span>
+        <label>確認密碼:</label>
+        <input
+          placeholder="请输入確認密碼"
+          v-model="password2"
+          name="password2"
+          v-validate="{ required: true, is: password }"
+          :class="{ invalid: errors.has('password2') }"
+        />
+        <!-- 獲取password字段驗證錯誤的提示訊息 -->
+        <span class="error-msg">{{ errors.first("password2") }}</span>
       </div>
       <div class="controls">
-        <input name="m1" type="checkbox" v-model="isCheck" />
+        <input
+          type="checkbox"
+          v-model="isChecked"
+          name="isChecked"
+          v-validate="{ agree: true }"
+          :class="{ invalid: errors.has('isChecked') }"
+        />
         <span>同意协议并注册《尚品汇用户协议》</span>
-        <span class="error-msg">错误提示信息</span>
+        <!-- 獲取password字段驗證錯誤的提示訊息 -->
+        <span class="error-msg">{{ errors.first("isChecked") }}</span>
       </div>
       <div class="btn">
         <button @click="register">完成注册</button>
@@ -93,12 +132,18 @@ export default {
 
     //點擊註冊按鈕的邏輯
     async register() {
-      //發請求把收集的數據，作為參數傳遞給後臺存儲數據庫
-      let { phone, password, password2, code } = this;
-      if (phone && password && password2 && code && password2 === password) {
+      //點擊完成註冊首先對所有的表單項做整體驗證，驗證通過返回的true，沒通過返回false
+      const success = await this.$validator.validateAll();
+      if (success) {
+        //發請求把收集的數據，作為參數傳遞給後臺存儲數據庫
+        let { phone, password, code } = this;
         try {
           //註冊成功
-          await this.$store.dispatch("userRegister", { phone, password, code });
+          await this.$store.dispatch("userRegister", {
+            phone,
+            password,
+            code,
+          });
           //註冊成功後續
           alert("註冊成功，前往登入頁面。");
           this.$router.push("/login");

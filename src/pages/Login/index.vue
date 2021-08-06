@@ -90,8 +90,10 @@ export default {
       let { phone, password } = this;
       try {
         await this.$store.dispatch("getUserLogin", { phone, password });
-        alert("登入成功，自動跳轉頁面");
-        this.$router.push("/");
+        // alert("登入成功，自動跳轉頁面");
+        // 登入成功去到之前想去而不能去的地方
+        let targetPath = this.$route.query.redirect || "/";
+        this.$router.push(targetPath);
       } catch (error) {
         alert("登入失敗");
       }

@@ -107,7 +107,20 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     //用戶根本沒登入，目前我們甚麼都不做，直接放行，後面我們是需要添加功能的。
-    next();
+    //如果用戶訪問的是  交易相關  支付相關  個人中心相關，那麼跳轉到登入頁面
+    let targetPath = to.path;
+    if (
+      targetPath.indexOf("/trade") !== -1 ||
+      targetPath.indexOf("pay") !== -1 ||
+      targetPath.startsWith("/center")
+    ) {
+      // next("/login"); 這樣寫可以直接去到登入頁，但是登入成功不會去之前想去的地方
+
+      //想要回到之前想去的地方，必須把想去的那個路徑帶到登入裡面
+      next("login?redirect=" + targetPath);
+    } else {
+      next();
+    }
   }
 });
 

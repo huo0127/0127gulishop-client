@@ -12,6 +12,18 @@ import "@/mock/mockServer"; //引入mockServer 讓模擬的接口生效
 import * as API from "@/api"; //直接獲取接口請求函數街口暴露出來的對象
 
 import { Button, MessageBox, Message } from "element-ui";
+
+import "@/utils/validate"; //引入vee-validate相關配置
+
+//圖片懶加載
+import VueLazyload from "vue-lazyload";
+import loading from "@/assets/images/loading.gif";
+// 在圖片介面還沒有進入到可視範圍前不加載，在沒有得到圖片前先顯示loading圖片
+Vue.use(VueLazyload, {
+  //內部自定義了一個指令lazy
+  loading, //指定未加載得到圖片之前的loading圖片
+});
+
 //element-ui當中有分為兩種組件
 //第一種組件就和下面這個Button一樣，可以引入然後全局註冊
 // Vue.use(Button);
@@ -83,6 +95,7 @@ import TypeNav from "@/components/TypeNav";
 import SlideLoop from "@/components/SlideLoop";
 import Pagination from "@/components/Pagination";
 //全局註冊的組件, 如果一個非路由組件被多個組件使用, 那麼定義在components, 註冊在全局
+// Vue.component(TypeNav.name, TypeNav); //寫這樣前提是組件內要命名
 Vue.component("TypeNav", TypeNav);
 Vue.component("SlideLoop", SlideLoop);
 Vue.component("Pagination", Pagination);
@@ -96,7 +109,7 @@ Vue.config.productionTip = false;
 new Vue({
   beforeCreate() {
     Vue.prototype.$bus = this; //安裝總線, 代表任意組件內部都可以通過this.$bus訪問到vm實例(總線)
-    Vue.prototype.$API = API;
+    Vue.prototype.$API = API; //接口請求函數暴露的整個對象掛到原型上
   },
   el: "#app",
   render: (h) => h(App),

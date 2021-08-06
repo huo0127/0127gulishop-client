@@ -245,6 +245,17 @@ export const reqPayStatus = (orderId) => {
   });
 };
 
+//請求獲取訂單列表數據
+//api/v2/get/order/auth/${page}/${limit}
+// get
+
+export const reqMyOderInfo = (page, limit) => {
+  return request({
+    url: `get/order/auth/${page}/${limit}`,
+    method: "get",
+  });
+};
+
 // 最終暴露的是
 // {
 //   reqAddOrUpdateShopCart,

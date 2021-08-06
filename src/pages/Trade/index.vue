@@ -118,6 +118,31 @@ export default {
       message: "", //收集用戶輸入的提交訊息
     };
   },
+
+  //組件內守衛
+  //組件內守衛，他執行的時機是在created之前的，也就是說組件還沒創建
+  // 因此如果這個守衛內部使用到this，不能直接使用
+  // 如果非要使用組件對象實例，那麼在守衛當中要傳一個回調函數
+  // next(vm=>{
+  //   通過`vm`  訪問組實例
+  // })
+
+  // beforeRouterEnter: (to, from, next) => {
+  // 在渲染該組件的對應路由被 confirm 前調用
+  // 不! 能! 獲取組件實例 `this`
+  // 一位當守衛執行前，組件實例還沒被創建
+  // 只有从购物车界面才能跳转到交易页面（创建订单）
+  //   next((vm) => {
+  //     if (from.path === "/shopcart") {
+  //       let message = vm.message;
+  //       next();
+  //     } else {
+  //       alert("只有从购物车界面才能跳转到交易页面（创建订单）");
+  //       next(false);
+  //     }
+  //   });
+  // },
+
   mounted() {
     this.getUserAddressList();
     this.getTradeInfo();
@@ -143,7 +168,7 @@ export default {
     async submitOrder() {
       //首先發請求
       //準備參數
-      let tradeNo = this.tradeInfo.tradeNo; //交易編號，是在交易頁面訊息裡面
+      let tradeNo = this.tradeInfo.tradeNo; //交易編號，在交易頁面訊息裡面
       let tradeInfo = {
         consignee: this.defaultAddress.consignee,
         consigneeTel: this.defaultAddress.phoneNum,
