@@ -111,7 +111,7 @@ router.beforeEach(async (to, from, next) => {
     let targetPath = to.path;
     if (
       targetPath.indexOf("/trade") !== -1 ||
-      targetPath.indexOf("pay") !== -1 ||
+      targetPath.indexOf("/pay") !== -1 ||
       targetPath.startsWith("/center")
     ) {
       // next("/login"); 這樣寫可以直接去到登入頁，但是登入成功不會去之前想去的地方

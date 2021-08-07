@@ -1032,13 +1032,21 @@ user 的 action 當中，發請求，成功提交 mutation 修改用戶的 token
 
     还没有加载得到目标图片时, 先显示 loading 图片
     在<img>进入可视范围才加载请求目标图片
-    参考文档去写
+
+    在main裡面，引入並使用
+    然後在組件內，<:src> 改為 <v-lazy>
 
 ## 90、路由懒加载
 
+使用 import from 這樣的方式是同步執行，將所有的路由組件一次性打包在一個大的文件當中。這樣打包之後，打包出來的文件體積比較大，當瀏覽器在訪問這個文件加載的時候，效率不高。
+所以我們就要想辦法將所有的路由組件，分別打包為小的文件。
+瀏覽器在訪問那個組件的時候，再去加載哪一個小的文件，效率就會提升。
+
+!這個過程就是我們所說的路由懶加載
+
     调用import函数把一次性打包的所有路由组件分开去打包加载
 
-    const Home = () => import('@/views/Home')
+    const Home = () => import('@/pages/Home')
 
 
     打包会打包成一个单独的文件
@@ -1080,9 +1088,37 @@ user 的 action 當中，發請求，成功提交 mutation 修改用戶的 token
     	nginx幫我們去做建議的web服務器，怎麼訪問ip找到dist文件訪問
     	nginx幫我們做代理轉發，因為生產環境沒有dev-server
 
-
-
     5、正向代理：
     		幫客戶端實現，用戶很明確的知道數據來源(根據目的地網站)
        反向代理：
     		帶服務器實現，用戶根本不知道數據來源。
+    6、	yum install nginx   //centOS裡面安裝nginx  擇一
+    	sudo apt-get install nginx  //ubuntu安裝
+    	yum remove nginx 卸載
+
+    7、配置nginx服務和代理server
+    {
+    	listen		80 default_server;
+    	listen		[::]:80 default_server;
+    	server_name   _;
+    	root		/root/ly/www/gulishop-client/dist
+
+
+    	include /etc/nginx/default.d/*.conf;
+
+    	location / {
+    		root	/root/ly/www/gulishop-cluent/dist;
+    		index	index.html;
+    		try_files $uri $uri/ /index.html;
+    	}
+
+    	//反向代理
+    	location /api {
+    		proxy_pass http://182.92.128.115;
+    	}
+    }
+
+    8、重啟nginx服務
+    	service nginx start
+    	service nginx restart
+    	service nginx stop

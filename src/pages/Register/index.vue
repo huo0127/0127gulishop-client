@@ -72,14 +72,14 @@
       <div class="controls">
         <input
           type="checkbox"
-          v-model="isChecked"
-          name="isChecked"
+          v-model="isCheck"
+          name="isCheck"
           v-validate="{ agree: true }"
-          :class="{ invalid: errors.has('isChecked') }"
+          :class="{ invalid: errors.has('isCheck') }"
         />
         <span>同意协议并注册《尚品汇用户协议》</span>
         <!-- 獲取password字段驗證錯誤的提示訊息 -->
-        <span class="error-msg">{{ errors.first("isChecked") }}</span>
+        <span class="error-msg">{{ errors.first("isCheck") }}</span>
       </div>
       <div class="btn">
         <button @click="register">完成注册</button>

@@ -7,7 +7,7 @@ Vue.use(VeeValidate);
 VeeValidate.Validator.localize("zh_TW", {
   messages: {
     ...zh_TW.messages,
-    //修改內痔規則的message，讓確認密碼與密碼相同
+    //修改內置規則的message，讓確認密碼與密碼相同
     is: (field) => `${field}必須與密碼相同`,
   },
   attributes: {

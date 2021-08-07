@@ -51,7 +51,7 @@
               </td>
               <td
                 v-if="index === 0"
-                rowspan="order.orderDetailList.length"
+                :rowspan="order.orderDetailList.length"
                 width="8%"
                 class="center"
               >
@@ -59,7 +59,7 @@
               </td>
               <td
                 v-if="index === 0"
-                rowspan="order.orderDetailList.length"
+                :rowspan="order.orderDetailList.length"
                 width="13%"
                 class="center"
               >
@@ -74,7 +74,7 @@
               </td>
               <td
                 v-if="index === 0"
-                rowspan="order.orderDetailList.length"
+                :rowspan="order.orderDetailList.length"
                 width="8%"
                 class="center"
               >
@@ -84,7 +84,7 @@
               </td>
               <td
                 v-if="index === 0"
-                rowspan="order.orderDetailList.length"
+                :rowspan="order.orderDetailList.length"
                 width="13%"
                 class="center"
               >
