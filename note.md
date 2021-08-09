@@ -1134,6 +1134,26 @@ user 的 action 當中，發請求，成功提交 mutation 修改用戶的 token
 
 props 子组件声明接收属性三种写法 ["todos"] { todos:Array} { todos:{type:Array,default:[]}}
 
+```javascript
+//聲明接收三種 props 的寫法
+
+//最完整：限制了類型、控制了必要性、指定了默認值
+props: {
+username: {
+type: String,
+required: true,
+default: "隔壁老王", },
+},
+
+//次完整：限制了類型
+props: {
+username: String,
+},
+
+//精簡的寫法：啥也不限制
+props: ["username"],
+```
+
 父子之间
 父可以给子传递 非函数和函数
 传非函数数据 就是父给子
@@ -1142,8 +1162,8 @@ props 子组件声明接收属性三种写法 ["todos"] { todos:Array} { todos:{
 ```javascript
 特殊：
 	路由配置 props（三种）  路由组件之间没有标签，但是可以把参数通过路由映射为属性
-		1、布爾值：把路徑params參數映射為要顯示的組件內屬性
-		2、對象	{name:"趙儷影"}  ：只能映射傳遞額外的靜態的數據，一般不會用
+		1、布爾值：映射params參數為props傳給路由組件
+		2、對象	{name:"趙儷影"}  ：通過props映射自定義的靜態數據，一般不會用
 		3、函數	props(route)=>{}：自己手動映射params參數和query參數，成為要顯示的組件內屬性
 		如果不用props，那麼組件內要用數據必須寫成 this.$route.params.xxx 或 this.$route.query.xxx
 ```
@@ -1202,7 +1222,8 @@ props 子组件声明接收属性三种写法 ["todos"] { todos:Array} { todos:{
     所有场合
 
     	本質是一個對象
-    	全局事件总线的角色标准
+
+    	條件：
     		1、所有的組件對象都可以看到
     		2、有$on和$emit方法
 
@@ -1221,7 +1242,7 @@ element-ui 表单相关项都使用到了 v-model
 
     1、html input v-model的本质
     	:value = “data”  //读取数据
-    	@input = "data = $event.target.value"  //写数据
+    	@input = "data = $event.target.value"  //更改数据
 
 
     2、组件标签上 v-model本质
@@ -1313,6 +1334,14 @@ element-ui 表单相关项都使用到了 v-model
     }
 
 ## 11、作用域插槽（八）
+
+    適用：父子之間
+    數據是在父組件當中的，數據是要給子組件去展示的(v-for)
+    展示的過程當中，數據的結構是由父組件決定的，子組件只能用於展示。
+
+    父組件要把需要子組件展示的數據傳遞給子組件
+    子組件在展示的過程中，需要改變結構的數據傳回給父組件
+    父組件再把結果和數據一併傳回給子組件
 
 ## 12、vuex（九）
 
