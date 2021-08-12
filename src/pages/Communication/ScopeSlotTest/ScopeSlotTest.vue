@@ -33,23 +33,23 @@
       3、子組件在展示數據的過程中，數據的結構是由父組件說的算。
      -->
 
-    <!-- <h2>效果一: 显示TODO列表时, 已完成的TODO为绿色</h2>
+    <!-- <h2>效果一: 显示TODO列表时, 已完成的TODO为绿色</h2> -->
     <List :todos="todos">
-      <template slot-scope="scopeProps"> -->
-    <!-- scopeProps 最終是一個對象，接收子組件作用域插槽回傳給父組件
-              的數據組成的對象。 -->
-    <!-- 
+      <template slot-scope="scopeProps">
+        -->
+        <!-- scopeProps 最終是一個對象，接收子組件作用域插槽回傳給父組件
+              的數據組成的對象。    
           {
             todo:todo
           }
          -->
-    <!-- <span
+        <span
           :style="{ color: scopeProps.todo.isComplete ? 'green' : 'black' }"
         >
           {{ scopeProps.todo.text }}
         </span>
       </template>
-    </List> -->
+    </List>
 
     <hr />
 
